@@ -3,8 +3,87 @@
 // http://www.paulirish.com/2012/box-sizing-border-box-ftw/
 html, body {
     box-sizing: border-box;
-    background-color: pink;
+    background-color: white;
+    color: black;
+    height: 100%;
+    margin: 0;
+    padding: 0;
 }
 *, *:before, *:after {
     box-sizing: inherit;
+}
+
+#scrollUp {
+    position: fixed;
+    bottom: 5%;
+    right: 3%;
+    width: 80px;
+    height: 80px;
+    border: 1px solid yellowgreen;
+}
+
+#scrollUp:hover {
+    cursor: pointer;
+}
+
+.mapTitle {
+    width: 100%;
+    text-align: center;
+    background-color: rgb(246, 64, 96);
+    height: 100px;
+    font-size: 3rem;
+    line-height: 5rem;
+    color: white;
+}
+
+.mapCover {
+    display: flex;
+    flex-direction: row;
+}
+
+#map {
+    height: 600px;
+    width: 50%;
+    border-radius: 20px;
+}
+
+#listCover {
+    position: fixed;
+    z-index: 1;
+    top: 14%;
+    right: 3.6%;
+    overflow-y:scroll;
+    overflow-x: hidden;
+    &::-webkit-scrollbar { 
+        display: none;
+    }
+    height: 80vh;
+}
+
+.event {
+    border: 1px solid black;
+    overflow: hidden;
+}
+
+.host {
+    display: inline-block;
+    text-align: center;
+    width: 90px;
+    // height: 70px;
+    padding: 5px;
+}
+
+.hostPhoto {
+    border-radius: 100%;
+    width: 60px;
+    height: 60px;
+}
+
+.hostName {
+    // text-align: center;
+    font-size: 0.9rem;
+}
+
+.detail {
+    display: inline-block;
 }

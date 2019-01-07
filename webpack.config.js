@@ -36,7 +36,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'index.ejs'),
       title: appHtmlTitle
-    })
+    }),
   ],
   module: {
     rules: [
