@@ -13,20 +13,6 @@ html, body {
     box-sizing: inherit;
 }
 
-#scrollUp {
-    display:none;
-    position: fixed;
-    bottom: 5%;
-    right: 3%;
-    width: 80px;
-    height: 80px;
-    border: 1px solid yellowgreen;
-}
-
-#scrollUp:hover {
-    cursor: pointer;
-}
-
 .title {
     position: fixed;
     background-color: rgb(246, 64, 96);
@@ -65,14 +51,15 @@ html, body {
 }
 
 .navi-cover, .navi-cover > li{
-    display: inline-block
+    display: inline-block;
+    padding-top: 5px;
 }
 
 .lookUp {
     position: fixed;
     top: 65px;
     visibility: hidden;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.6);
     width: 100%;
     height: 100%;
     padding: 20px;
@@ -99,7 +86,7 @@ html, body {
 
 .popUp-clicked {
     animation-name: left-right;
-    animation-duration: 3.5s;  
+    animation-duration: 2s;
     animation-fill-mode: forwards;
 }
 
@@ -109,7 +96,7 @@ html, body {
     }
 
     to {
-        left: 500px;
+        left: 470px;
     }
 }
 
@@ -125,9 +112,12 @@ html, body {
 
 .popUp > input[type=text] {
     padding: 12px 20px;
-    margin: 8px 0;
     border-radius: 6px;
     border: 1px solid #ccc;
+}
+
+.popUp > label {
+    margin-top: 8px;
 }
 
 .popUp > input[type=submit] {
@@ -148,11 +138,6 @@ html, body {
     background-color: #3e8e41;
 }
 
-// .mapCover {
-//     display: flex;
-//     flex-direction: row;
-// }
-
 .mapUp {
     position: fixed;
     top: 65px;
@@ -160,8 +145,9 @@ html, body {
     background: rgba(0, 0, 0, 0.7);
     width: 100%;
     height: 100%;
-    padding: 20px;
-    transition: opacity 500ms;
+    padding: 30px;
+    padding-top: 35px;
+    transition: opacity 0.5s;
     opacity: 0;
 }
 
@@ -186,17 +172,19 @@ html, body {
 
 .mapCover-clicked {
     animation-name: right-left;
-    animation-duration: 2s;
+    animation-duration: 1s;
     animation-fill-mode: forwards;
 }
 
 @keyframes right-left {
     from {
+        width: 60%;
         right: 0px;
     }
 
     to {
-        right: 300px;
+        width: 35%;
+        right: 460px;
     }
 }
 
@@ -207,113 +195,147 @@ html, body {
     border-radius: 20px;
 }
 
-// #listCover {
-//     display: none;
-//     position: fixed;
-//     z-index: 1;
-//     top: 14%;
-//     right: 3.6%;
-//     overflow-y:scroll;
-//     overflow-x: hidden;
-//     &::-webkit-scrollbar { 
-//         display: none;
-//     }
-//     max-height: 80vh;
-//     background-color: white;
+#listCover {
+    font-family: 'Noto Sans KR', sans-serif;
+    position: fixed;
+    top: 100px;
+    width: 60%;
+    z-index: 1;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    &::-webkit-scrollbar { 
+        display: none;
+    }
+    max-height: 80vh;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px 20px 10px 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.event {
+    position: relative;
+    padding: 6px 3px 6px 6px;
+    width: 430px;
+    margin-bottom: 18px;
+    margin-left: 14px;
+    border-radius: 10px;
+    box-shadow: 4px 6px 5px #888888;
+    display: flex;
+    flex-direction: row;
+}
+
+// .event:hover {
+//     transform: scale(1.05);
 // }
 
-// .event {
-//     border: 1px solid black;
-//     overflow: hidden;
-//     position: relative;
-// }
+.eventTitle {
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding-bottom: 6px;
+}
 
-// .host {
-//     display: inline-block;
-//     text-align: center;
-//     width: 90px;
-//     // height: 70px;
-//     padding: 5px;
-// }
+.event > .addPickUp, .removePickUp{
+    position: absolute;
+    top: 30%;
+    right: 10px;
+    font-size: 1.5rem;
+    border-radius: 100%;
+    color: #999999;
+}
 
-// .hostPhoto {
-//     border-radius: 100%;
-//     width: 60px;
-//     height: 60px;
-// }
+.removePickUp {
+    color: rgb(240, 240, 22);
+}
 
-// .hostName {
-//     font-size: 0.9rem;
-// }
+.tooltip {
+    visibility: hidden;
+    width: 80px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    // padding: 5px 0;
+    z-index: 1;
+    bottom: 110%;
+    left: -60%;
+    margin-left: -10px;
+    font-size: 0.8rem;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
 
-// .detail {
-//     display: inline-block;
-// }
+.removePickUp > .tooltip {
+    width: 100px;
+    margin-left: -20px;
+}
 
-// #favoriteContainer {
-//     position: fixed;
-//     top: 2.5%;
-//     left: 62%;
-//     z-index: 1;
-// }
+.addPickUp:hover .tooltip, .removePickUp:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
 
-// #favoriteDisplay {
-//     padding: 8px;
-//     border-radius: 100%;
-//     background-color: white;
-// }
+.event > .detail {
+    width: 300px;
+    display: inline-block;
+    font-size: 0.7rem;
+    padding-left: 18px;
+    font-weight: sin;
+}
 
-// #favoriteCover {
-//     display:none;
-//     // position: fixed;
-//     // z-index: 1;
-//     // top: 14%;
-//     // right: 3.6%;
-//     overflow-y:scroll;
-//     overflow-x: hidden;
-//     &::-webkit-scrollbar { 
-//         display: none;
-//     }
-//     max-height: 80vh;
-//     background-color: white;
-// }
+.event > .host {
+    text-align: center;
+    display: inline-block;
+    width: 70px;
+}
 
-// #favoriteDisplay:hover {
-//     cursor: pointer;
-// }
+.host > span {
+    font-weight: bold;
+    font-size: 0.9rem;
+    padding-bottom: 5px;
+}
 
-// .fa-eraser {
-//     font-size: 2rem;
-// }
+.host > img {
+    width: 70px;
+    height: 70px;
+    border-radius: 100%;
+}
 
-// .fa-eraser:hover {
-//     cursor: pointer;
-// }
+.listLookUp {
+    animation-name: lookUp;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
+}
 
-// .fa-heart {
-//     font-size: 2.4rem;
-//     color: tomato;
-// }
+.listMapUp {
+    animation-name: mapUp;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
+}
 
-// .addfavorite, .removefavorite {
-//     position: absolute;
-//     left: 90%;
-//     bottom: 20%;
-//     border-radius: 100%;
-//     border: 1px solid black;
-//     padding: 8px;
-// }
+@keyframes mapUp {
+    from {
+        right: 0;
+    }
 
-// .addfavorite:hover, .removefavorite:hover, .fa-times-circle:hover {
-//     cursor: pointer;
-//     filter: invert(50%);
-// }
+    to {
+        right: 20px;
+    }
+}
 
-// .fa-map-marked-alt, .fa-trash-alt, .fa-times-circle {
-//     font-size: 2rem;
-// }
+@keyframes lookUp {
+    from {
+        left: 0;
+    }
 
-//loader
+    to {
+        left: 40px;
+    }
+}
+
 .loading {
     display: inline-block;
     position: absolute;
@@ -325,13 +347,12 @@ html, body {
 
 .loading > div {
     display: inline-block;
-    width: 400px;
-    height: 400px;
+    width: 300px;
+    height: 300px;
     margin: 6px;
     padding: 10px;
     border-radius: 50%;
-    // background: #fff;
-    background: transparent;
+    background: #fff;
     animation: loading 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
 }
 

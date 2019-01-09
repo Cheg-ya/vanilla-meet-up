@@ -4,37 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
     <link href="https://fonts.googleapis.com/css?family=Baloo" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+KR" rel="stylesheet">
     <title><%= htmlWebpackPlugin.options.title %></title>
 </head>
 <body>
-    <!-- <div id="coverPage">
-        <header id="header">
-            <div class="inner">
-                <h1>Vanilla MeetUp</h1>
-                <h2>To meet new People!</h2>
-                <a href="#" class="startButton">
-                    <span>Get Started</span>
-                </a>
-            </div>
-            <a href="#" class="hiddenButton">
-                <span><i class="fas fa-home"></i></span>
-            </a>
-        </header>
-         -->
     <header>
+        <!-- loader -->
+        <div class="loading hide">
+            <div>
+                <img class="logo" src="./assets/images/logo.svg" />
+            </div>
+        </div>
         <div class="title">
             <span><a id="page-reload" href="#floatingPannel">Vanilla-MeetUp</a></span>
             <ul class="navi-cover">
-                <li><a href="#floatingPannel">LookUp</a></li>
-                <li><a href="#floatingMap">MapUp</a></li>
-                <li><a href="#floatingPickUp">PickUp</a></li>
+                <li><a id="lookUpButton" href="#floatingPannel">LookUp</a></li>
+                <li><a id="mapUpButton" href="#floatingMap">MapUp</a></li>
+                <li><a id="pickUpButton" href="#floatingMap">PickUp</a></li>
             </ul>
         </div>
+        <!-- list -->
+        <div id="listCover" class="hide"></div>
         <!-- lookup -->
         <div id="floatingPannel" class="lookUp">
             <form class="popUp">
-                <label for="city">City name</label>
-                <input id="city" type="text" value="" placeholder="City, Country or City" />
+                <label for="city">City</label>
+                <input id="city" type="text" value="" placeholder="City name" />
                 <label for="topic">Topic</label>
                 <input id="topic" type="text" value="" placeholder="your interest" />
                 <label for="radius">Radius</label>
@@ -51,46 +46,21 @@
             </div>
         </div>
     </header>
-    <div id="searchPage">
-        <!-- loader -->
-        <div class="loading hide">
-            <div>
-                <img class="logo" src="./assets/images/logo.svg" />
-            </div>
-        </div>
-        <!-- LookUp list -->
-        <div id="listCover">
-        </div>
-        <!-- pickUp -->
-        <div id="floatingPickUp" class="pickUp">
-            <div id="favoriteDisplay">
-                <i class="fas fa-heart"></i>
-            </div>
-            <div id="favoriteCover" class="hide"></div>
-        </div>
-    </div>
-    <footer id="footer">
-        <a href="#" class="fa fa-info-circle">
-            <span>About</span>
-        </a>
-    </footer>
-    </div>
-    <div id="scrollUp"><img src="" alt="">ScrollUp</div>
     <script>
         let map;
         let markers = [];
-        let seoul;
+        let newYork;
 
         function initMap () {
-            seoul = {lat: 37.555, lng: 126.99};
+            newYork = {lat: 40.7127753, lng: -74.0059728};
 
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 12,
-                center: seoul
+                center: newYork
             });
 
             const defaultMarker = new google.maps.Marker({
-                position: seoul,
+                position: newYork,
                 map: map
             });
 
