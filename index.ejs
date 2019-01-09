@@ -8,44 +8,47 @@
     <title><%= htmlWebpackPlugin.options.title %></title>
 </head>
 <body>
-    <header>
-        <!-- loader -->
-        <div class="loading hide">
-            <div>
-                <img class="logo" src="./assets/images/logo.svg" />
-            </div>
-        </div>
-        <div class="title">
-            <span><a id="page-reload" href="#floatingPannel">Vanilla-MeetUp</a></span>
-            <ul class="navi-cover">
+    <div id="wrapper"> 
+        <header class="title">
+            <span><a id="pageReload" href="#floatingPannel">Vanilla-MeetUp</a></span>
+            <ul class="naviCover">
                 <li><a id="lookUpButton" href="#floatingPannel">LookUp</a></li>
                 <li><a id="mapUpButton" href="#floatingMap">MapUp</a></li>
                 <li><a id="pickUpButton" href="#floatingMap">PickUp</a></li>
             </ul>
-        </div>
-        <!-- list -->
-        <div id="listCover" class="hide"></div>
-        <!-- lookup -->
-        <div id="floatingPannel" class="lookUp">
-            <form class="popUp">
-                <label for="city">City</label>
-                <input id="city" type="text" value="" placeholder="City name" />
-                <label for="topic">Topic</label>
-                <input id="topic" type="text" value="" placeholder="your interest" />
-                <label for="radius">Radius</label>
-                <input id="radius" type="text" value="" placeholder="miles" />
-                <input id="submit" type="submit" value="Search" />
-                <a class="close" href="#">&times;</a> 
-            </form>
-        </div>
-        <!-- mapUp -->
-        <div id="floatingMap" class="mapUp">
-            <div class="mapCover">
-                <div id="map"></div>
-                <a class="close" href="#">&times;</a> 
+        </header>
+        <div>
+            <div id="floatingPannel" class="lookUp">
+                <form class="popUp">
+                    <label for="city">City</label>
+                    <input id="city" type="text" value="" placeholder="Where to go?" />
+                    <label for="topic">Topic</label>
+                    <input id="topic" type="text" value="" placeholder="What's on mind?" />
+                    <label for="radius">Radius</label>
+                    <input id="radius" type="text" value="" placeholder="miles" />
+                    <input id="submit" type="submit" value="Search" />
+                    <a class="close" href="#">&times;</a> 
+                </form>
+            </div>
+            <div id="floatingMap"class="mapUp">
+                <div class="mapCover">
+                    <input id="searchBox" type="text" placeholder="Search Box" />
+                    <div id="map"></div>
+                    <a class="close" href="#">&times;</a> 
+                </div>
+            </div>
+            <div id="listContainer">
+                <div id="listCover" class="hide"></div>
             </div>
         </div>
-    </header>
+        <footer>
+            <div class="loading hide">
+                <div>
+                    <img class="logo" src="./assets/images/logo.svg" />
+                </div>
+            </div>
+        </footer>
+    </div>
     <script>
         let map;
         let markers = [];

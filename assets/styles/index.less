@@ -13,6 +13,16 @@ html, body {
     box-sizing: inherit;
 }
 
+body {
+    background-image: url('/assets/images/people.jpg');
+    background-size: cover;
+}
+
+#wrapper {
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
 .title {
     position: fixed;
     background-color: rgb(246, 64, 96);
@@ -30,27 +40,28 @@ html, body {
 }
 
 .title > ul {
+    position: absolute;
+    top: -2px;
+    right: 36%;
     margin: 0;
 }
 
 .title > ul > li > a {
     margin-left: 10px;
-    padding: 0px 10px 13px 10px;
+    padding: 0px 10px 0 10px;
     color: black;
     background-color: white;
     text-decoration: none;
-    border: 1px solid white;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    height: 100%;
 }
 
-.navi-cover {
+.naviCover {
     position: absolute;
     right: 40%;
 }
 
-.navi-cover, .navi-cover > li{
+.naviCover, .naviCover > li{
     display: inline-block;
     padding-top: 5px;
 }
@@ -157,8 +168,8 @@ html, body {
 }
 
 .mapUp .close {
-    top: -5px;
-    right: 15px;
+    top: -10px;
+    right: 10px;
 }
 
 .mapCover {
@@ -167,7 +178,7 @@ html, body {
     border-radius: 10px;
     width: 60%;
     margin: 0 auto;
-    padding: 40px;
+    padding: 30px;
 }
 
 .mapCover-clicked {
@@ -183,16 +194,20 @@ html, body {
     }
 
     to {
-        width: 35%;
-        right: 460px;
+        width: 38%;
+        right: 470px;
     }
 }
 
 #map {
     margin: 0 auto; 
-    height: 500px;
+    height: 518px;
     width: 100%;
     border-radius: 20px;
+}
+
+#listContainer > .close {
+    top: 0;
 }
 
 #listCover {
@@ -206,8 +221,9 @@ html, body {
     &::-webkit-scrollbar { 
         display: none;
     }
+
     max-height: 80vh;
-    background-color: white;
+    background-color: rgb(250, 250, 250);
     border-radius: 10px;
     padding: 20px 20px 10px 10px;
     display: flex;
@@ -225,11 +241,28 @@ html, body {
     box-shadow: 4px 6px 5px #888888;
     display: flex;
     flex-direction: row;
+    background-color: white;
 }
 
-// .event:hover {
-//     transform: scale(1.05);
-// }
+.info {
+    display: flex;
+    flex-direction: row;
+}
+
+.info .host {
+    width: 70px;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.info .host img {
+    width: 60px;
+    height: 60px;
+}
+
+.info .host .hostName {
+    font-size: 0.7rem;
+}
 
 .eventTitle {
     font-weight: bold;
@@ -257,7 +290,6 @@ html, body {
     color: #fff;
     text-align: center;
     border-radius: 6px;
-    // padding: 5px 0;
     z-index: 1;
     bottom: 110%;
     left: -60%;

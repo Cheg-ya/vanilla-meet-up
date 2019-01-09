@@ -14,92 +14,75 @@ const city = document.getElementById('city');
 const topic = document.getElementById('topic');
 const radius = document.getElementById('radius');
 const loader = document.getElementsByClassName('loading')[0];
-const addItem = document.getElementsByClassName('addPickUp');
-const removeItem = document.getElementsByClassName('removePickUp');
-const reloader = document.getElementById('page-reload');
+const addList = document.getElementsByClassName('addPickUp');
+const removeList = document.getElementsByClassName('removePickUp');
+const reloader = document.getElementById('pageReload');
 const form = document.getElementsByClassName('popUp')[0];
 const mapCover = document.getElementsByClassName('mapCover')[0];
 const lookUp = document.getElementById('lookUpButton');
 const mapUp = document.getElementById('mapUpButton');
 const pickUp = document.getElementById('pickUpButton');
+const meetUplist = document.getElementsByClassName('event');
 const autocomplete = new google.maps.places.Autocomplete(city);
+
 let previousCity = '';
 let mapclicked = false;
 let submitted = false;
 let pickUpClicked = false;
-//디자인, 마크 레이블, code convetion, refector
-lookUp.addEventListener('click', function () {
-    let hidden = listCover.classList.contains('hide');
-    let listed = listCover.classList.contains('listMapUp');
-    debugger;
-    if (!hidden && !submitted) {
+
+lookUp.addEventListener('click', () => {
+    const listed = listCover.classList.contains('listMapUp');
+    const hidden = listCover.classList.contains('hide');
+
+    if (listed && !hidden) {
         listCover.classList.toggle('hide');
+        listCover.classList.remove('listMapUp');
+        mapCover.classList.remove('mapCover-clicked');
 
-        if (listed) {
-            listCover.classList.remove('listMapUp');
-            mapCover.classList.remove('mapCover-clicked');
-        }
-
-    } else if (hidden && submitted || mapclicked) {
-        listCover.classList.toggle('hide');
-
-        if (listed) {
-            listCover.classList.remove('listMapUp');
-            mapCover.classList.remove('mapCover-clicked');
-        }        
+    } else if (listed && hidden) {
+        listCover.classList.remove('listMapUp');
     }
 });
 
-mapUp.addEventListener('click', function () {
-    let hidden = listCover.classList.contains('hide');
-    let listed = listCover.classList.contains('listLookUp');
+mapUp.addEventListener('click', () => {
+    const listed = listCover.classList.contains('listLookUp');
+    const hidden = listCover.classList.contains('hide');
 
-    if (!hidden && !mapclicked) {
+    if (listed && !hidden) {
         listCover.classList.toggle('hide');
-        
-        if (listed) {
-            listCover.classList.remove('listLookUp');
-            form.classList.remove('popUp-clicked');
-        }
-
-    } else if (hidden && mapclicked) {
-        listCover.classList.toggle('hide');
-
-        if (listed) {
-            listCover.classList.remove('listLookUp');    
-            form.classList.remove('popUp-clicked');
-        }
+        listCover.classList.remove('listLookUp');
+        form.classList.remove('popUp-clicked');
     }
 });
 
-pickUp.addEventListener('click', function (e) {
+pickUp.addEventListener('click', (e) => {
     pickUpClicked = true;
-    listCover.classList.add('listMapUp');
-    mapCover.classList.add('mapCover-clicked')
 
-    pickUpBox(e.currentTarget.id);
+    pickUpBox({
+        target: e.currentTarget.id
+    });
 });
 
-reloader.addEventListener('click', function () {
+reloader.addEventListener('click', () => {
     location.reload();
 });
 
-google.maps.event.addListener(map,'click', function (e) {
+google.maps.event.addListener(map,'click', (e) => {
     mapclicked = true;
 
     if (!mapCover.classList.contains('mapCover-clicked')) {
         mapCover.classList.add('mapCover-clicked');
     }
 
-    if (topic.value.length === 0 || topic.value === undefined) {
+    if (topic.value.length === 0) {
         topic.value = 'movie';
     }
 
-    if (radius.value.length === 0 || radius.value === undefined) {
+    if (radius.value.length === 0) {
         radius.value = 10;
     }
 
-    if (city.value.length === 0 || radius.value === undefined) {
+    if (city.value.length === 0) {
         city.value = 'NY';
     }
 
@@ -118,16 +101,13 @@ google.maps.event.addListener(map,'click', function (e) {
     });
 });
 
-submit.addEventListener('click', function () {
+submit.addEventListener('click', () => {
     submitted = true;
-
-    if (!form.classList.contains('popUp-clicked')) {
-        form.classList.add('popUp-clicked');
-    }
+    form.classList.add('popUp-clicked');
 
     const geocoder = new google.maps.Geocoder();
 
-    targetCoordinates(geocoder, map);
+    targetCoordinates(geocoder);
 });
 
 function meetUpAPI (query, radius, location) {
@@ -145,19 +125,19 @@ function meetUpAPI (query, radius, location) {
 
     const address = `https://api.meetup.com/find/upcoming_events?key=175b1e495e751e6470291c431102538&photo-host=public&lon=${location.lng}&page=10&text=${query}&radius=${radius}&lat=${location.lat}`;
 
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, reject) => {
         $.ajax({
             url: address,
             dataType: 'jsonp',
-            success: function (data) {
+            success (data) {
                 resolve(data);
             },
 
-            error: function (err) {
+            error (err) {
                 reject(err);
             }
 
-        }).then(function (list) {
+        }).then((list) => {
             if (list.data.errors !== undefined) {
                 loader.classList.add('hide');
                 throw list.data.errors[0].message;
@@ -165,6 +145,15 @@ function meetUpAPI (query, radius, location) {
 
             if (list.data.events.length === 0) {
                 loader.classList.add('hide');
+
+                if (mapclicked) {
+                    mapCover.classList.remove('mapCover-clicked');
+                }
+
+                if (submitted) {
+                    form.classList.remove('popUp-clicked');
+                }
+                
                 throw 'No available event';
             }
 
@@ -173,13 +162,13 @@ function meetUpAPI (query, radius, location) {
             list = list.data.events;
 
             for (let i = 0; i < list.length; i++) {
-                hostList.push(new Promise(function (resolve) {
+                hostList.push(new Promise((resolve) => {
                     const url = `https://api.meetup.com/${list[i].group.urlname}?key=175b1e495e751e6470291c431102538&photosign=true&photo-host=public`;
 
                     $.ajax({
                         url: url,
                         dataType: 'jsonp',
-                        success: function (result) {
+                        success (result) {
                             const host = result.data.organizer;
                             const groupInfo = result.data;
                             let newData;
@@ -198,6 +187,7 @@ function meetUpAPI (query, radius, location) {
                                     lng: list[i].venue !== undefined ?  list[i].venue.lon : groupInfo.lon,
                                     lat: list[i].venue !== undefined ?  list[i].venue.lat : groupInfo.lat
                                 };
+
                             } catch (e){
                                 loader.classList.add('hide');
                                 this.error(e);
@@ -206,7 +196,7 @@ function meetUpAPI (query, radius, location) {
                             resolve(newData);
                         },
 
-                        error: function (err) {
+                        error (err) {
                             reject(err);
                         }
                     });
@@ -215,12 +205,10 @@ function meetUpAPI (query, radius, location) {
 
             return Promise.all(hostList);
 
-        }).then(function (list) {
+        }).then((list) => {
             localStorage.setItem('originData', JSON.stringify(list));
 
             listTemplate(list);
-            clearMarker();
-            createMarker(list);
 
             if (submitted) {
                 listCover.classList.remove('mapLookUp');
@@ -233,14 +221,13 @@ function meetUpAPI (query, radius, location) {
                 mapclicked = false;
             }
 
-
-        }).catch(function (err) {
+        }).catch((err) => {
             alert(err);
         });
     });
 }
 
-function targetCoordinates (geocoder, map) {
+function targetCoordinates (geocoder) {
     const currentCity = city.value || 'NY';
     const query = topic.value || 'movie';
     const radiusRange = radius.value || 10;
@@ -258,10 +245,10 @@ function targetCoordinates (geocoder, map) {
         previousCity = currentCity;
     }
 
-    geocoder.geocode({'address': currentCity}, function (results, status) {
+    geocoder.geocode({'address': currentCity}, (results, status) => {
         location = results[0].geometry.location;
 
-        if (status == 'OK') {
+        if (status === 'OK') {
             map.setCenter(location);
 
             const marker = new google.maps.Marker({
@@ -284,37 +271,48 @@ function targetCoordinates (geocoder, map) {
     });
 }
 
-function createMarker (list) {
-    list.forEach(function (v, i) {
-        setTimeout(function () {
-            const place = {
-                lat: list[i].lat,
-                lng: list[i].lng
-            };
+function createMarker (list, info) {
+    for (let i = 0; i < list.length; i++) {
+        const place = {
+            lat: list[i].lat,
+            lng: list[i].lng
+        };
 
-            markers.push(new google.maps.Marker({
-                position: place,
-                map:map,
-                animation: google.maps.Animation.DROP
-            }));
-        }, i * 200);
-    });
+        const marker = new google.maps.Marker({
+            position: place,
+            map:map,
+            animation: google.maps.Animation.DROP
+        });
+
+        marker.addListener('click', () => {
+            info.open(map, marker);
+        });
+
+        markers.push(marker);
+    }
 }
 
 function clearMarker() {
-    markers.forEach(function(marker) {
+    markers.forEach((marker) => {
         marker.setMap(null);
     });
 
     markers = [];
 }
 
-function pickUpBox (e, idx) {
-    if (e === 'pickUpButton' && !idx) {
+function pickUpBox (e) {
+    if (e.target === 'pickUpButton') {
         const list = [];
 
         if (localStorage.originData === undefined || localStorage.length <= 2) {
             alert('Your pick up list is empty!')
+            const formlisted = listCover.classList.contains('listLookUp');
+
+            if (formlisted) {
+                listCover.classList.toggle('hide');
+                listCover.classList.remove('listLookUp');
+                form.classList.remove('popUp-clicked');
+            }
 
             pickUpClicked = false;
 
@@ -323,61 +321,87 @@ function pickUpBox (e, idx) {
 
         for (let k in localStorage) {
             let id = k.split(' ')[0];
-            
+
             if (id === 'id') {
                 list.push(JSON.parse(localStorage[k]));
             }
         }
 
         listTemplate(list);
-        clearMarker();
-        createMarker(list);
 
+        const maplisted = listCover.classList.contains('listMapUp');
+        const formlisted = listCover.classList.contains('listLookUp');
+    
+        if (maplisted) {
+            listCover.classList.remove('listMapUp');
+            mapCover.classList.remove('mapCover-clicked');
+    
+        } else if (formlisted) {
+            listCover.classList.remove('listLookUp');
+            form.classList.remove('popUp-clicked');
+        }
+
+        listCover.classList.add('listMapUp');
+        mapCover.classList.add('mapCover-clicked');
         pickUpClicked = false;
 
         return;
     }
+}
 
-    
+function dataStore (e) {
     let lists = [];
+    const idx = Array.prototype.slice.call(listCover.children).indexOf(e.target.offsetParent);
 
-    if (e[0] === 'pickUp') {
+    if (e.listType === 'pickUp') {
         for (let k in localStorage) {
             let id = k.split(' ')[0];
-            
+
             if (id === 'id') {
                 lists.push(JSON.parse(localStorage[k]));
             }
         }
 
-    } else if (e[0] === 'list') {
+    } else if (e.listType === 'list') {
        lists = JSON.parse(localStorage.originData);
     }
 
-    const singleList = lists[idx];    
-    debugger;
-    if (e[1] === 'add') {
+    const singleList = lists[idx];
+
+    if (e.action === 'add') {
         localStorage.setItem(`id ${singleList.eventId}`, JSON.stringify(singleList));
-        addItem[idx].classList.add('hide');
-        removeItem[idx].classList.remove('hide');
-        
-    } else if (e[1] === 'remove') {
+        addList[idx].classList.add('hide');
+        removeList[idx].classList.remove('hide');
+
+    } else if (e.action === 'remove') {
         localStorage.removeItem(`id ${singleList.eventId}`, JSON.stringify(singleList));
-        removeItem[idx].classList.add('hide');
-        addItem[idx].classList.remove('hide');
+
+        if (e.listType === 'pickUp') {
+            listCover.removeChild(e.target.offsetParent);
+
+            if (listCover.children.length === 0) {
+                listCover.classList.add('hide');
+                mapCover.classList.remove('mapCover-clicked');
+            }
+
+            return;
+        }
+
+        removeList[idx].classList.add('hide');
+        addList[idx].classList.remove('hide');
 
     } else {
         throw new Error('Unvaild input value');
     }
 }
-// 즐찾 분기 애니메이션
+
 function listTemplate (list) {
     if (!Array.isArray(list)) {
         throw new Error('List is not an Array');
     }
 
     const listTemplate = _.template(
-        `<% _.forEach(list, function (event) { %>
+        `<% _.forEach(list, (event) => { %>
             <div class="event">
                 <div class="host">
                     <img class="hostPhoto" src="<%= event.photoLink %>" />
@@ -404,36 +428,82 @@ function listTemplate (list) {
 
     listCover.innerHTML = eventList;
 
+    clearMarker();
+
+    const infoTemplate = _.template(
+        `<div class="info">
+            <div class="host">
+                <img class="hostPhoto" src="<%= list.photoLink %>" />
+                <span class="hostName"><%= list.hostName %></span>
+            </div>
+            <div class="detail">
+                <div class="eventTitle"><%= list.eventTitle %></div>
+                    <div class="groupName">Group: <%= list.groupName %></div>
+                    <div class="date">Date: <%= list.time %> <%= list.date %></div>
+                    <div class="rsvp">RSVP: <%= list.rsvpCount %>/<%= list.rsvpLimit %></div>
+                </div>
+            </div>
+        </div>`);
+
+    for (let i = 0; i < list.length; i++) {
+        const contentString = infoTemplate({list: list[i]});
+        const infoWindow = new google.maps.InfoWindow({
+            content: contentString
+        });
+
+        createMarker([list[i]], infoWindow);
+    }
+
     if (pickUpClicked) {
         for (let i = 0; i < listCover.children.length; i++) {
-            (function (idx) {
-                addItem[i].addEventListener('click', function () {
-                    pickUpBox(['pickUp', 'add'], idx);
+            removeList[i].addEventListener('click', (e) => {
+                dataStore({
+                    listType: 'pickUp',
+                    action: 'remove',
+                    target: e.currentTarget
                 });
-    
-                removeItem[i].addEventListener('click', function () {
-                    pickUpBox(['pickUp', 'remove'], idx);
+            });
+
+            addList[i].classList.add('hide');
+            removeList[i].classList.remove('hide');
+            meetUplist[i].addEventListener('mouseover', () => {
+                map.setCenter({
+                    lat: list[i].lat,
+                    lng: list[i].lng
                 });
-                
-                addItem[i].classList.add('hide');
-                removeItem[i].classList.remove('hide');
-            })(i);
+
+                map.getCenter();
+            });
         }
 
         pickUpClicked = false;
 
     } else {
         for (let i = 0; i < listCover.children.length; i++) {
-            (function (idx) {
-                addItem[i].addEventListener('click', function (e) {
-                    debugger;
-                    pickUpBox(['list', 'add'], idx);
+            addList[i].addEventListener('click', (e) => {
+                dataStore({
+                    listType: 'list',
+                    action: 'add',
+                    target: e.currentTarget
+                });
+            });
+
+            removeList[i].addEventListener('click', (e) => {
+                dataStore({
+                    listType: 'list',
+                    action: 'remove',
+                    target: e.currentTarget
+                });
+            });
+
+            meetUplist[i].addEventListener('mouseover', () => {
+                map.setCenter({
+                    lat: list[i].lat,
+                    lng: list[i].lng
                 });
 
-                removeItem[i].addEventListener('click', function (e) {
-                    pickUpBox(['list', 'remove'], idx);
-                });
-            })(i);
+                map.getCenter();
+            });
         }
     }
 
