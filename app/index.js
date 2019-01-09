@@ -23,12 +23,14 @@ const lookUp = document.getElementById('lookUpButton');
 const mapUp = document.getElementById('mapUpButton');
 const pickUp = document.getElementById('pickUpButton');
 const meetUplist = document.getElementsByClassName('event');
+const counter  = document.getElementById('counter');
 const autocomplete = new google.maps.places.Autocomplete(city);
-
 let previousCity = '';
 let mapclicked = false;
 let submitted = false;
 let pickUpClicked = false;
+
+counter.textContent = localStorage.getItem('originData') ? localStorage.length - 2 : localStorage.length - 1;
 
 lookUp.addEventListener('click', () => {
     const listed = listCover.classList.contains('listMapUp');
@@ -153,7 +155,7 @@ function meetUpAPI (query, radius, location) {
                 if (submitted) {
                     form.classList.remove('popUp-clicked');
                 }
-                
+
                 throw 'No available event';
             }
 
@@ -188,7 +190,7 @@ function meetUpAPI (query, radius, location) {
                                     lat: list[i].venue !== undefined ?  list[i].venue.lat : groupInfo.lat
                                 };
 
-                            } catch (e){
+                            } catch (e) {
                                 loader.classList.add('hide');
                                 this.error(e);
                             }
@@ -206,13 +208,19 @@ function meetUpAPI (query, radius, location) {
             return Promise.all(hostList);
 
         }).then((list) => {
+            for (let i = 0; i < list.length; i++) {
+                if (localStorage.getItem(`id ${list[i].eventId}`) === JSON.stringify(list[i])) {
+                    list.splice(i, 1);
+                }
+            }
+
             localStorage.setItem('originData', JSON.stringify(list));
 
             listTemplate(list);
 
             if (submitted) {
                 listCover.classList.remove('mapLookUp');
-                listCover.classList.add('listLookUp');     
+                listCover.classList.add('listLookUp');
                 submitted = false;
 
             } else if (mapclicked) {
@@ -305,7 +313,8 @@ function pickUpBox (e) {
         const list = [];
 
         if (localStorage.originData === undefined || localStorage.length <= 2) {
-            alert('Your pick up list is empty!')
+            alert('Your pick up list is empty!');
+
             const formlisted = listCover.classList.contains('listLookUp');
 
             if (formlisted) {
@@ -320,10 +329,10 @@ function pickUpBox (e) {
         }
 
         for (let k in localStorage) {
-            let id = k.split(' ')[0];
+            const id = k.split(' ')[0];
 
             if (id === 'id') {
-                list.push(JSON.parse(localStorage[k]));
+                list.push(JSON.parse(localStorage.getItem(k)));
             }
         }
 
@@ -331,11 +340,11 @@ function pickUpBox (e) {
 
         const maplisted = listCover.classList.contains('listMapUp');
         const formlisted = listCover.classList.contains('listLookUp');
-    
+
         if (maplisted) {
             listCover.classList.remove('listMapUp');
             mapCover.classList.remove('mapCover-clicked');
-    
+
         } else if (formlisted) {
             listCover.classList.remove('listLookUp');
             form.classList.remove('popUp-clicked');
@@ -370,16 +379,19 @@ function dataStore (e) {
 
     if (e.action === 'add') {
         localStorage.setItem(`id ${singleList.eventId}`, JSON.stringify(singleList));
+        counter.textContent = localStorage.length - 2;
         addList[idx].classList.add('hide');
         removeList[idx].classList.remove('hide');
 
     } else if (e.action === 'remove') {
         localStorage.removeItem(`id ${singleList.eventId}`, JSON.stringify(singleList));
+        counter.textContent = localStorage.length - 2;
 
         if (e.listType === 'pickUp') {
             listCover.removeChild(e.target.offsetParent);
 
             if (listCover.children.length === 0) {
+                localStorage.removeItem('originData');
                 listCover.classList.add('hide');
                 mapCover.classList.remove('mapCover-clicked');
             }
